@@ -10,17 +10,15 @@ Het doel van Candy Crush is om zoveel mogelijk punten te behalen door het matche
  
 2. Matchen van snoepjes: 
 - De speler kan twee aangrenzende snoepjes op het speelbord verwisselen om een rij van minimaal drie identieke snoepjes van dezelfde kleur te vormen. 
-# TODO: verander de onderstaande tekst naar lower case met hoofdletters op de juiste plaats. Verwijder daarna deze todo. 
-- ZODRA EEN MATCH IS GEMAAKT, VERDWIJNEN DE OVEREENKOMENDE SNOEPJES VAN HET SPEELBORD EN WORDEN NIEUWE SNOEPJES VAN BOVENAF IN HET RASTER GEDROPT OM DE LEGE PLEKKEN OP TE VULLEN. 
--Extra punten worden verdiend wanneer de speler meer dan drie snoepjes combineert of speciale snoepjes creëert door bijvoorbeeld een L-vormige of T-vormige match te maken. 
+- Zodra een match is gemaakt, verdwijnen de overeenkomende snoepjes van het speelbord en worden nieuwe snoepjes van bovenaf in het raster gedropt om de lege plekken op te vullen. 
+- Extra punten worden verdiend wanneer de speler meer dan drie snoepjes combineert of speciale snoepjes creëert door bijvoorbeeld een L-vormige of T-vormige match te maken. 
  
 3. Speciale snoepjes: 
 - Het spel kan speciale snoepjes bevatten die extra krachten hebben wanneer ze worden gematcht: 
-# TODO: verzin 2 namen voor de speciale snoepjes die hieronder beschreven staan en schrijf ze in de plaats van “<naamSnoepje>”. Verwijder daarna deze todo. 
-*** <naamSnoepje>: Wanneer je een rij van minstens 3 snoepjes maakt, wordt ook de volledige onderste rij verwijderd.  
-*** <naamSnoepje>: Wanneer je een rij van minstens 3 snoepjes maakt, worden ook alle andere snoepje die aan de rij grenzen verwijderd. 
-*** <naamSnoepje>: Deze snoepjes zijn dubbele punten waard. 
-*** <naamSnoepje>: Wanneer je een rij van minstens 3 snoepjes maakt, krijg je 3 extra zetten. 
+*** Licorice: Wanneer je een rij van minstens 3 snoepjes maakt, wordt ook de volledige onderste rij verwijderd.  
+*** JollyRancher: Wanneer je een rij van minstens 3 snoepjes maakt, worden ook alle andere snoepje die aan de rij grenzen verwijderd. 
+*** GummyBear: Deze snoepjes zijn dubbele punten waard. 
+*** Dragibus: Wanneer je een rij van minstens 3 snoepjes maakt, krijg je 3 extra zetten. 
  
 4. Puntentelling en einde spel: 
 - Elke snoepje in een verwijderde rij levert evenveel punten op als het aantal snoepjes dat verwijderd worden. 
