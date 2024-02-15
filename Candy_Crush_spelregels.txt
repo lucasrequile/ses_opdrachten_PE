@@ -23,3 +23,5 @@ Het doel van Candy Crush is om zoveel mogelijk punten te behalen door het matche
 4. Puntentelling en einde spel: 
 - Elke snoepje in een verwijderde rij levert evenveel punten op als het aantal snoepjes dat verwijderd worden. 
 - De speler heeft slechts een vast aantal zetten. Wanneer het aantal zetten 0 wordt is het spel gedaan. 
+
+nagekeken door stef bleus
