@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.kuleuven.candycrush.CandyCrushMainMenuController">
+   <children>
+      <Button fx:id="startbtn" layoutX="277.0" layoutY="287.0" mnemonicParsing="false" text="Login" />
+      <TextField fx:id="nameField" layoutX="226.0" layoutY="188.0" />
+      <Label layoutX="226.0" layoutY="171.0" text="Please enter your name:" />
+      <Label fx:id="errorLabel" layoutX="353.0" layoutY="291.0" text=" " />
+   </children>
+</AnchorPane>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.kuleuven.candycrush.CandyCrushGameController">
+   <children>
+      <AnchorPane fx:id="candyCrushPane" layoutX="100.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" />
+      <Button fx:id="resetbtn" layoutX="450.0" layoutY="240" mnemonicParsing="false" text="Reset" />
+      <Label layoutX="411.0" layoutY="100.0" text="Current Player:" />
+      <Label fx:id="currentPlayerLabel" layoutX="411.0" layoutY="120.0" text="currentPlayer" />
+      <Label layoutX="411.0" layoutY="160.0" text="Score:" />
+      <Label fx:id="currentScoreLabel" layoutX="411.0" layoutY="180.0" text="score" />
+   </children>
+</AnchorPane>
