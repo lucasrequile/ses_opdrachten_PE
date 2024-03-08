@@ -27,14 +27,12 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
+
     - name: Build with Gradle Wrapper
-      run: ./gradlew build
+      run: cd /candycrush/ && ./gradlew build
 
     - name: test with Gradle Wrapper
-      run: ./gradlew test
+      run: cd /candycrush/ && ./gradlew test
 
     - name: Jar with Gradle Wrapper
-      run: ./gradlew jar
-
-    - name: voer uit with Gradle Wrapper
-      run: java -cp "build/libs/candycrush.jar;." be.kuleuven.CandyCrushApplication
+      run: cd /candycrush/ && ./gradlew jar
