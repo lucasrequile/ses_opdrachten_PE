@@ -15,6 +15,9 @@ public class CandyCrushModel {
     private ArrayList<Integer> candyArray;
 
     public CandyCrushModel(int height, int width, String playerName) {
+        if (height <= 0 || width <= 0) {
+            throw new IllegalArgumentException("Height and width must be positive integers");
+        }
         this.score = 0;
         this.highScore = 0;
         this.height = height;
@@ -25,6 +28,9 @@ public class CandyCrushModel {
     }
 
     public void generateCandyArray(int height, int width){
+        if (height <= 0 || width <= 0) {
+            throw new IllegalArgumentException("Height and width must be positive integers");
+        }
         candyArray.clear();
         for(int i =0; i<height*width; i++){
             candyArray.add((int)(Math.random()*5)+1);
@@ -81,5 +87,10 @@ public class CandyCrushModel {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public void reset(int height, int width) {
+        generateCandyArray(height,width);
+        setScore(0);
     }
 }

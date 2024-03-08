@@ -41,7 +41,7 @@ public class CandyCrushView extends Region {
             candyText.setLayoutX(textx);
             candyText.setLayoutY(texty);
             textx=textx+candyWidth;
-            int index = i; // Store the index for the lambda expression
+            int index = i;
             candyText.setOnMouseClicked(event -> handleClick(index));
             candyCrushPane.getChildren().add(candyText);
         }

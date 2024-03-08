@@ -5,10 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e6377be6-9dca-4315-8691-7da921116942" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../candycrush/libs/CheckNeighboursInGrid-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../candycrush/src/main/java/be/kuleuven/candycrush/model/CandyCrushModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../candycrush/src/main/java/be/kuleuven/candycrush/view/CandyCrushView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CheckNeighboursInGrid-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../CheckNeighboursInGrid-1.0-SNAPSHOT.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -151,7 +147,7 @@
       <workItem from="1708868983045" duration="32000" />
       <workItem from="1708953732945" duration="2658000" />
       <workItem from="1709806000713" duration="700000" />
-      <workItem from="1709835480919" duration="991000" />
+      <workItem from="1709835480919" duration="993000" />
     </task>
     <servers />
   </component>

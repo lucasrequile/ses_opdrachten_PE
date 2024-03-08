@@ -33,16 +33,15 @@ public class CandyCrushGameController {
         this.view = new CandyCrushView(model, candyCrushPane, CANDY_PANE_WIDTH, CANDY_PANE_HEIGHT, currentScoreLabel);
         candyCrushPane.getChildren().addAll(view);
         currentPlayerLabel.setText(model.getName());
-        resetbtn.setOnAction(e->reset());
-        reset();
+        resetbtn.setOnAction(e->reset(HEIGHT,WIDTH));
+        reset(HEIGHT,WIDTH);
     }
     private void update(){
         view.update();
     }
 
-    private void reset(){
-        model.generateCandyArray(HEIGHT,WIDTH);
-        model.setScore(0);
+    private void reset(int height, int width){
+        model.reset(height, width);
         update();
     }
 }
