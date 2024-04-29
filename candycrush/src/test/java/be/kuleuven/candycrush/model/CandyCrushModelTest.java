@@ -12,13 +12,17 @@ class CandyCrushModelTest{
     @BeforeEach
     public void setUp() {
         boardSize = new BoardSize(10,10);
-        model = new CandyCrushModel(boardSize, "Player1");
+        model = new CandyCrushModel("Player1");
     }
 
     @Test
     public void testCandyGeneration_RightSize() {
-        model.generateCandyArray(boardSize);
-        assertEquals(100, model.getCandyArray().size());
+        model.generateCandyArray();
+        int i = 0;
+        for(Position p: model.getBoard().getBoardSize().positions()){
+            i++;
+        }
+        assertEquals(100, i);
     }
 
     @Test
@@ -32,50 +36,66 @@ class CandyCrushModelTest{
 
     @Test
     public void testRemoveSameNeighbours_under3() {
-        model.generateCandyArray(boardSize);
+        model.generateCandyArray();
         Candy c1 = new NormalCandy(3);
         Candy c2 = new NormalCandy(2);
-        model.getCandyArray().set(0,c1);
-        model.getCandyArray().set(1,c1);
-        model.getCandyArray().set(2,c2);
-        model.getCandyArray().set(10,c2);
-        model.getCandyArray().set(11,c2);
-        model.getCandyArray().set(12,c2);
+        Position p1 = new Position(0,0,boardSize);
+        Position p2 = new Position(0,1,boardSize);
+        Position p3 = new Position(0,2,boardSize);
+        Position p4 = new Position(1,0,boardSize);
+        Position p5 = new Position(1,1,boardSize);
+        Position p6 = new Position(1,2,boardSize);
+        model.getBoard().replaceCellAt(p1,c1);
+        model.getBoard().replaceCellAt(p2,c1);
+        model.getBoard().replaceCellAt(p3,c1);
+        model.getBoard().replaceCellAt(p4,c2);
+        model.getBoard().replaceCellAt(p5,c2);
+        model.getBoard().replaceCellAt(p6,c2);
         Position p = new Position(0,0,boardSize);
         model.removeSameNeighbours(p);
-        assertEquals(c1, model.getCandyArray().get(1));
-        assertEquals(c2, model.getCandyArray().get(10));
-        assertEquals(c2, model.getCandyArray().get(11));
-        assertEquals(c2, model.getCandyArray().get(12));
+        assertEquals(c1, model.getBoard().getCellAt(p1));
+        assertEquals(c2, model.getBoard().getCellAt(p4));
+        assertEquals(c2, model.getBoard().getCellAt(p5));
+        assertEquals(c2, model.getBoard().getCellAt(p6));
         assertEquals(0,model.getScore());
     }
 
     @Test
     public void testRemoveSameNeighbours_above3() {
-        model.generateCandyArray(boardSize);
+        model.generateCandyArray();
         Candy c1 = new NormalCandy(3);
-        model.getCandyArray().set(0,c1);
-        model.getCandyArray().set(1,c1);
-        model.getCandyArray().set(2,c1);
-        model.getCandyArray().set(10,c1);
-        model.getCandyArray().set(11,c1);
-        model.getCandyArray().set(12,c1);
+        Position p1 = new Position(0,0,boardSize);
+        Position p2 = new Position(0,1,boardSize);
+        Position p3 = new Position(0,2,boardSize);
+        Position p4 = new Position(1,0,boardSize);
+        Position p5 = new Position(1,1,boardSize);
+        Position p6 = new Position(1,2,boardSize);
+        model.getBoard().replaceCellAt(p1,c1);
+        model.getBoard().replaceCellAt(p2,c1);
+        model.getBoard().replaceCellAt(p3,c1);
+        model.getBoard().replaceCellAt(p4,c1);
+        model.getBoard().replaceCellAt(p5,c1);
+        model.getBoard().replaceCellAt(p6,c1);
         Position p = new Position(0,0,boardSize);
         model.removeSameNeighbours(p);
-        assertEquals(c1, model.getCandyArray().get(2));
-        assertEquals(c1, model.getCandyArray().get(12));
+        assertEquals(c1, model.getBoard().getCellAt(p3));
+        assertEquals(c1, model.getBoard().getCellAt(p6));
         assertEquals(4,model.getScore());
     }
 
     @Test
     public void testGameReset() {
-        model.generateCandyArray(boardSize);
+        model.generateCandyArray();
         model.setScore(50);
         Position p = new Position(0,0,boardSize);
         model.removeSameNeighbours(p);
-        model.reset(boardSize);
+        model.reset();
         assertEquals(0, model.getScore());
-        assertEquals(100, model.getCandyArray().size());
+        int i = 0;
+        for(Position p2: model.getBoard().getBoardSize().positions()){
+            i++;
+        }
+        assertEquals(100, i);
     }
     @Test
     public void testName() {
@@ -88,14 +108,6 @@ class CandyCrushModelTest{
         assertThrows(IllegalArgumentException.class, () -> new BoardSize(10, -10));
         assertThrows(IllegalArgumentException.class, () -> new BoardSize(0, 10));
         assertThrows(IllegalArgumentException.class, () -> new BoardSize(10, 0));
-    }
-
-    @Test
-    public void testGetWidthAndHeight() {
-        BoardSize boardSize2 = new BoardSize(5,7);
-        CandyCrushModel model2 = new CandyCrushModel(boardSize2, "Player1");
-        assertEquals(5, model2.getBoardSize().height());
-        assertEquals(7, model2.getBoardSize().width());
     }
 
     @Test

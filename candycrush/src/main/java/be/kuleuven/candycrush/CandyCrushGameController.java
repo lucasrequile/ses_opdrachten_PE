@@ -29,20 +29,19 @@ public class CandyCrushGameController {
 
     @FXML
     public void initialize(String name) {
-        BoardSize boardSize = new BoardSize(HEIGHT, WIDTH);
-        this.model = new CandyCrushModel(boardSize, name);
+        this.model = new CandyCrushModel(name);
         this.view = new CandyCrushView(model, candyCrushPane, CANDY_PANE_WIDTH, CANDY_PANE_HEIGHT, currentScoreLabel);
         candyCrushPane.getChildren().addAll(view);
         currentPlayerLabel.setText(model.getName());
-        resetbtn.setOnAction(e->reset(boardSize));
-        reset(boardSize);
+        resetbtn.setOnAction(e->reset());
+        reset();
     }
     private void update(){
         view.update();
     }
 
-    private void reset(BoardSize boardSize){
-        model.reset(boardSize);
+    private void reset(){
+        model.reset();
         update();
     }
 }

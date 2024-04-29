@@ -5,55 +5,47 @@ import java.util.Iterator;
 import java.util.List;
 
 public class CandyCrushModel {
-    private String playerName;
+    private final String playerName;
     private int score;
     private int highScore;
-    private ArrayList<Candy> candyArray;
-    private BoardSize boardSize;
+    private final Board<Candy> board;
 
-    public CandyCrushModel(BoardSize boardSize, String playerName) {
+    public CandyCrushModel(String playerName) {
         this.score = 0;
         this.highScore = 0;
         this.playerName = playerName;
-        this.boardSize = boardSize;
-        candyArray = new ArrayList<Candy>();
-        generateCandyArray(boardSize);
+        BoardSize boardSize = new BoardSize(10, 10);
+        this.board = new Board<Candy>(boardSize);
+        generateCandyArray();
     }
 
-    public void generateCandyArray(BoardSize boardSize){
-        candyArray.clear();
-        for(Position p : boardSize.positions()){
-            Candy c = Candy.generateNewCandy();
-            candyArray.add(c);
-        }
+    public void generateCandyArray(){
+        this.board.fill(p -> Candy.generateNewCandy());
     }
     public void removeSameNeighbours(Position p) {
-        Iterable<Position> sameNeighbourPositions = getSameNeighbours(p);
+        ArrayList<Position> sameNeighbourPositions = (ArrayList<Position>) getSameNeighbours(p);
         if(sameNeighbourPositions == null){
             return;
         }else{
-            int amountOfNeighbours = 0;
             for (Position neighbourPosition : sameNeighbourPositions) {
-                amountOfNeighbours++;
-                candyArray.set(neighbourPosition.toIndex(), Candy.generateNewCandy());
+                this.board.replaceCellAt(neighbourPosition, Candy.generateNewCandy());
             }
-            candyArray.set(p.toIndex(), Candy.generateNewCandy());
-            increaseScore(amountOfNeighbours+1);
+            increaseScore(sameNeighbourPositions.size());
         }
     }
 
     public Iterable<Position> getSameNeighbours(Position p){
         List<Position> sameNeighbours = new ArrayList<Position>();
-        Candy candy = candyArray.get(p.toIndex());
         for(Position neighbourPosition : p.neighborPositions()){
-            if(neighbourPosition.rowNumber() < 0 || neighbourPosition.rowNumber() >= boardSize.height() || neighbourPosition.columnNumber() < 0 || neighbourPosition.columnNumber() >= boardSize.width()){
+            if(neighbourPosition.rowNumber() < 0 || neighbourPosition.rowNumber() >= board.getBoardSize().height() || neighbourPosition.columnNumber() < 0 || neighbourPosition.columnNumber() >= board.getBoardSize().width()){
                 continue;
             }
-            if(candyArray.get(neighbourPosition.toIndex()).equals(candy)){
+            if(this.board.getCellAt(neighbourPosition).equals(board.getCellAt(p))){
                 sameNeighbours.add(neighbourPosition);
             }
         }
-        if(sameNeighbours.size() >= 2){
+        sameNeighbours.add(p);
+        if(sameNeighbours.size() >= 3){
             return sameNeighbours;
         }else{
             return null;
@@ -67,7 +59,6 @@ public class CandyCrushModel {
         }
     }
 
-
     public int getScore() {
         return this.score;
     }
@@ -76,24 +67,20 @@ public class CandyCrushModel {
         return this.highScore;
     }
 
-
-    public ArrayList<Candy> getCandyArray() {
-        return candyArray;
+    public Board<Candy> getBoard() {
+        return this.board;
     }
 
     public String getName() {
         return playerName;
-    }
-    public BoardSize getBoardSize() {
-        return boardSize;
     }
 
     public void setScore(int score) {
         this.score = score;
     }
 
-    public void reset(BoardSize boardSize) {
-        generateCandyArray(boardSize);
+    public void reset() {
+        generateCandyArray();
         setScore(0);
     }
 }

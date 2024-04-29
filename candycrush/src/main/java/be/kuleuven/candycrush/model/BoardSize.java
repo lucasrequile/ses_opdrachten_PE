@@ -17,4 +17,8 @@ public record BoardSize(int height, int width) {
         }
         return (Iterable<Position>)positionsList;
     }
+
+    public int size() {
+        return height * width;
+    }
 }

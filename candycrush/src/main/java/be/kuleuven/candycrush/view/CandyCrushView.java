@@ -17,11 +17,11 @@ public class CandyCrushView extends Region {
     private Label currentScoreLabel;
     private int candyPaneWidth;
     private int candyPaneHeight;
-    private ArrayList<Candy> candyArray;
     private int width;
     private int height;
     private int candyWidth;
     private int candyHeight;
+    private ArrayList<Candy> candyArray;
 
     public CandyCrushView(CandyCrushModel model, AnchorPane candyCrushPane, int candyPaneWidth, int candyPaneHeight, Label currentScoreLabel) {
         this.model = model;
@@ -29,18 +29,18 @@ public class CandyCrushView extends Region {
         this.candyPaneWidth = candyPaneWidth;
         this.candyPaneHeight = candyPaneHeight;
         this.currentScoreLabel = currentScoreLabel;
-        this.candyArray = model.getCandyArray();
-        this.width = model.getBoardSize().width();
-        this.height = model.getBoardSize().height();
-        this.candyWidth = candyPaneWidth/(candyArray.size() / width);
-        this.candyHeight = candyPaneHeight/(candyArray.size() / height);
+        this.width = model.getBoard().getBoardSize().width();
+        this.height = model.getBoard().getBoardSize().height();
+        this.candyWidth = candyPaneWidth/(model.getBoard().getBoardSize().size() / width);
+        this.candyHeight = candyPaneHeight/(model.getBoard().getBoardSize().size() / height);
+        this.candyArray = model.getBoard().getBoardCells();
     }
 
     public void drawCandies() {
         candyCrushPane.getChildren().clear();
         int i = 0;
         for(Candy c: candyArray){
-            Position p = new Position((int)(i/width),(int)(i%width), model.getBoardSize());
+            Position p = new Position((int)(i/width),(int)(i%width), model.getBoard().getBoardSize());
             System.out.println(""+i);
             Node n = makeCandyShape(p, c);
             candyCrushPane.getChildren().add(n);
