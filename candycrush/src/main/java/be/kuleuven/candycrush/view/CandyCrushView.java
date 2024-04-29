@@ -1,9 +1,12 @@
 package be.kuleuven.candycrush.view;
 
 import be.kuleuven.candycrush.model.*;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import java.util.ArrayList;
 import javafx.scene.input.MouseEvent;
@@ -14,6 +17,11 @@ public class CandyCrushView extends Region {
     private Label currentScoreLabel;
     private int candyPaneWidth;
     private int candyPaneHeight;
+    private ArrayList<Candy> candyArray;
+    private int width;
+    private int height;
+    private int candyWidth;
+    private int candyHeight;
 
     public CandyCrushView(CandyCrushModel model, AnchorPane candyCrushPane, int candyPaneWidth, int candyPaneHeight, Label currentScoreLabel) {
         this.model = model;
@@ -21,36 +29,50 @@ public class CandyCrushView extends Region {
         this.candyPaneWidth = candyPaneWidth;
         this.candyPaneHeight = candyPaneHeight;
         this.currentScoreLabel = currentScoreLabel;
+        this.candyArray = model.getCandyArray();
+        this.width = model.getBoardSize().width();
+        this.height = model.getBoardSize().height();
+        this.candyWidth = candyPaneWidth/(candyArray.size() / width);
+        this.candyHeight = candyPaneHeight/(candyArray.size() / height);
     }
 
     public void drawCandies() {
-        ArrayList<Integer> candyArray = model.getCandyArray();
-        int width = model.getWidth();
-        int height = model.getHeight();
-        int candyWidth = candyPaneWidth/(candyArray.size() / width);
-        int candyHeight = candyPaneHeight/(candyArray.size() / height);
         candyCrushPane.getChildren().clear();
-        int textx = 0;
-        int texty = 0;
-        for(int i=0; i<height*width; i++ ){
-            if(i>=width){
-                textx = (i%width)*candyWidth;
-                texty= (i/width)*candyHeight;
-            }
-            Text candyText = new Text(candyArray.get(i)+"");
-            candyText.setLayoutX(textx);
-            candyText.setLayoutY(texty);
-            textx=textx+candyWidth;
-            int index = i;
-            candyText.setOnMouseClicked(event -> handleClick(index));
-            candyCrushPane.getChildren().add(candyText);
+        int i = 0;
+        for(Candy c: candyArray){
+            Position p = new Position((int)(i/width),(int)(i%width), model.getBoardSize());
+            System.out.println(""+i);
+            Node n = makeCandyShape(p, c);
+            candyCrushPane.getChildren().add(n);
+            n.setOnMouseClicked(event -> handleClick(p));
+            i++;
         }
 
     }
 
-    private void handleClick(int index) {
-        System.out.println("Clicked on candy at index: " + index);
-        model.removeSameNeighbours(index);
+    private Node makeCandyShape(Position position, Candy candy){
+        if(candy.isSpecial()){
+            Rectangle r = new Rectangle(candyWidth, candyHeight);
+            r.setFill(candy.getColor());
+            int layoutX = position.columnNumber()*candyWidth-candyWidth/2;
+            int layoutY = position.rowNumber()*candyHeight-candyHeight/2;
+            r.setLayoutX(layoutX);
+            r.setLayoutY(layoutY);
+            return r;
+        }else{
+            Circle c = new Circle(candyWidth/2);
+            c.setFill(candy.getColor());
+            int layoutX = position.columnNumber()*candyWidth;
+            int layoutY = position.rowNumber()*candyHeight;
+            c.setLayoutX(layoutX);
+            c.setLayoutY(layoutY);
+            return c;
+        }
+    }
+
+    private void handleClick(Position p) {
+        System.out.println("Clicked on candy at index: " + p.toIndex());
+        model.removeSameNeighbours(p);
         update();
     }
 

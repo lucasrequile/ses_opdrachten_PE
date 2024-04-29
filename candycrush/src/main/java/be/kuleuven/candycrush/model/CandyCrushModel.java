@@ -2,55 +2,61 @@ package be.kuleuven.candycrush.model;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import be.kuleuven.CheckNeighboursInGrid;
+import java.util.List;
 
 public class CandyCrushModel {
     private String playerName;
     private int score;
     private int highScore;
-    private int height;
-    private int width;
+    private ArrayList<Candy> candyArray;
+    private BoardSize boardSize;
 
-    private ArrayList<Integer> candyArray;
-
-    public CandyCrushModel(int height, int width, String playerName) {
-        if (height <= 0 || width <= 0) {
-            throw new IllegalArgumentException("Height and width must be positive integers");
-        }
+    public CandyCrushModel(BoardSize boardSize, String playerName) {
         this.score = 0;
         this.highScore = 0;
-        this.height = height;
-        this.width = width;
         this.playerName = playerName;
-        candyArray = new ArrayList<Integer>();
-        generateCandyArray(height, width);
+        this.boardSize = boardSize;
+        candyArray = new ArrayList<Candy>();
+        generateCandyArray(boardSize);
     }
 
-    public void generateCandyArray(int height, int width){
-        if (height <= 0 || width <= 0) {
-            throw new IllegalArgumentException("Height and width must be positive integers");
-        }
+    public void generateCandyArray(BoardSize boardSize){
         candyArray.clear();
-        for(int i =0; i<height*width; i++){
-            candyArray.add((int)(Math.random()*5)+1);
+        for(Position p : boardSize.positions()){
+            Candy c = Candy.generateNewCandy();
+            candyArray.add(c);
         }
     }
-    public void removeSameNeighbours(int index) {
-        Iterable<Integer> sameNeighboursIndices = CheckNeighboursInGrid.getSameNeighboursIds(candyArray, width, height, index);
-        int neighbourCounter = 1;
-        for (Object i : sameNeighboursIndices) {
-            neighbourCounter++;
-        }
-        System.out.println(neighbourCounter+"");
-        if(neighbourCounter >= 3){
-            Iterator<Integer> iterator = sameNeighboursIndices.iterator();
-            while (iterator.hasNext()) {
-                int neighbourIndex = iterator.next();
-                candyArray.set(neighbourIndex, (int) (Math.random() * 5)+1);
+    public void removeSameNeighbours(Position p) {
+        Iterable<Position> sameNeighbourPositions = getSameNeighbours(p);
+        if(sameNeighbourPositions == null){
+            return;
+        }else{
+            int amountOfNeighbours = 0;
+            for (Position neighbourPosition : sameNeighbourPositions) {
+                amountOfNeighbours++;
+                candyArray.set(neighbourPosition.toIndex(), Candy.generateNewCandy());
             }
-            candyArray.set(index, (int) (Math.random() * 5)+1);
-            increaseScore(neighbourCounter);
+            candyArray.set(p.toIndex(), Candy.generateNewCandy());
+            increaseScore(amountOfNeighbours+1);
+        }
+    }
+
+    public Iterable<Position> getSameNeighbours(Position p){
+        List<Position> sameNeighbours = new ArrayList<Position>();
+        Candy candy = candyArray.get(p.toIndex());
+        for(Position neighbourPosition : p.neighborPositions()){
+            if(neighbourPosition.rowNumber() < 0 || neighbourPosition.rowNumber() >= boardSize.height() || neighbourPosition.columnNumber() < 0 || neighbourPosition.columnNumber() >= boardSize.width()){
+                continue;
+            }
+            if(candyArray.get(neighbourPosition.toIndex()).equals(candy)){
+                sameNeighbours.add(neighbourPosition);
+            }
+        }
+        if(sameNeighbours.size() >= 2){
+            return sameNeighbours;
+        }else{
+            return null;
         }
     }
 
@@ -70,27 +76,24 @@ public class CandyCrushModel {
         return this.highScore;
     }
 
-    public int getHeight() {
-        return this.height;
-    }
-    public int getWidth() {
-        return this.width;
-    }
 
-    public ArrayList<Integer> getCandyArray() {
+    public ArrayList<Candy> getCandyArray() {
         return candyArray;
     }
 
     public String getName() {
         return playerName;
     }
+    public BoardSize getBoardSize() {
+        return boardSize;
+    }
 
     public void setScore(int score) {
         this.score = score;
     }
 
-    public void reset(int height, int width) {
-        generateCandyArray(height,width);
+    public void reset(BoardSize boardSize) {
+        generateCandyArray(boardSize);
         setScore(0);
     }
 }

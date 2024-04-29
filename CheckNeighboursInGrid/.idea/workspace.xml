@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e6377be6-9dca-4315-8691-7da921116942" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../candycrush/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../candycrush/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../candycrush/src/main/java/be/kuleuven/candycrush/model/CandyCrushModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../candycrush/src/main/java/be/kuleuven/candycrush/model/CandyCrushModel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,6 +150,7 @@
       <workItem from="1708953732945" duration="2658000" />
       <workItem from="1709806000713" duration="700000" />
       <workItem from="1709835480919" duration="993000" />
+      <workItem from="1713169524537" duration="434000" />
     </task>
     <servers />
   </component>
