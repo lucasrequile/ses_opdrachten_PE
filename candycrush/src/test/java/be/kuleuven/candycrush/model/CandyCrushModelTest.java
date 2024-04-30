@@ -139,5 +139,4 @@ class CandyCrushModelTest{
         Position position = new Position(5, 5, boardSize);
         assertEquals(55, position.toIndex());
     }
-
 }

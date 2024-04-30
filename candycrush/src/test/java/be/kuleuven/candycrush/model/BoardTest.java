@@ -46,4 +46,21 @@ class BoardTest {
         board.copyTo(other);
         assertEquals(board.getBoardCells(), other.getBoardCells());
     }
+
+    @Test
+    public void testGenerateReversedBoardCells() {
+        Candy c1 = new NormalCandy(3);
+        Position p1 = new Position(0,0,board.getBoardSize());
+        board.replaceCellAt(p1,c1);
+        board.generateReversedBoardCells();
+        assertTrue(board.getReverseBoardCells().containsKey(c1));
+    }
+
+    @Test
+    public void testGetPositionsOfElement() {
+        Candy c1 = new NormalCandy(3);
+        Position p1 = new Position(0,0,board.getBoardSize());
+        board.replaceCellAt(p1,c1);
+        assertTrue(board.getPositionsOfElement(c1).iterator().hasNext());
+    }
 }

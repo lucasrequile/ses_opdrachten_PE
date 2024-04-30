@@ -7,9 +7,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
-import java.util.ArrayList;
-import javafx.scene.input.MouseEvent;
+import java.util.Map;
+
 
 public class CandyCrushView extends Region {
     private CandyCrushModel model;
@@ -21,7 +20,7 @@ public class CandyCrushView extends Region {
     private int height;
     private int candyWidth;
     private int candyHeight;
-    private ArrayList<Candy> candyArray;
+    private Map<Position, Candy> candyArray;
 
     public CandyCrushView(CandyCrushModel model, AnchorPane candyCrushPane, int candyPaneWidth, int candyPaneHeight, Label currentScoreLabel) {
         this.model = model;
@@ -39,9 +38,9 @@ public class CandyCrushView extends Region {
     public void drawCandies() {
         candyCrushPane.getChildren().clear();
         int i = 0;
-        for(Candy c: candyArray){
-            Position p = new Position((int)(i/width),(int)(i%width), model.getBoard().getBoardSize());
-            System.out.println(""+i);
+        for(Map.Entry<Position, Candy> entry : candyArray.entrySet()){
+            Position p = entry.getKey();
+            Candy c = entry.getValue();
             Node n = makeCandyShape(p, c);
             candyCrushPane.getChildren().add(n);
             n.setOnMouseClicked(event -> handleClick(p));
