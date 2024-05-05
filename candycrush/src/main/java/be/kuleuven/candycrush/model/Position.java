@@ -69,6 +69,19 @@ public record Position(int rowNumber, int columnNumber, BoardSize boardSize) {
                 ));
     }
 
+    public boolean isAdjacentTo(Position other){
+        if(this.equals(other)){
+            return false;
+        }
+        if(this.rowNumber == other.rowNumber){
+            return Math.abs(this.columnNumber - other.columnNumber) == 1;
+        }
+        if(this.columnNumber == other.columnNumber){
+            return Math.abs(this.rowNumber - other.rowNumber) == 1;
+        }
+        return false;
+    }
+
     public boolean isLastColumn(){
         return columnNumber == boardSize.width() - 1;
     }

@@ -1,5 +1,7 @@
 package be.kuleuven.candycrush;
 
+import be.kuleuven.candycrush.StringModelMaker;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,6 +22,7 @@ public class CandyCrushMainMenuController {
     @FXML
     private void initialize(){
         startbtn.setOnAction(e->loginButtonClicked());
+        StringModelMaker stringModel = new StringModelMaker();
     }
 
     @FXML

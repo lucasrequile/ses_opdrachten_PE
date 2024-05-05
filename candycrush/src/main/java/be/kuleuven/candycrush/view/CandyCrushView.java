@@ -74,7 +74,7 @@ public class CandyCrushView extends Region {
 
     private void handleClick(Position p) {
         System.out.println("Clicked on candy at index: " + p.toIndex());
-        model.removeSameNeighbours(p);
+        model.handleClick(p);
         update();
     }
 

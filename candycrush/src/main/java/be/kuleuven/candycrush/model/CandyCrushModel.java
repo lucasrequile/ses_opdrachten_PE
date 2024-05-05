@@ -7,28 +7,20 @@ public class CandyCrushModel {
     private final String playerName;
     private int score;
     private int highScore;
-    private final Board<Candy> board;
+    private Board<Candy> board;
+    private ArrayList<Position> clickList;
 
-    public CandyCrushModel(String playerName) {
+    public CandyCrushModel(String playerName, BoardSize boardSize) {
         this.score = 0;
         this.highScore = 0;
         this.playerName = playerName;
-        BoardSize boardSize = new BoardSize(10, 10);
+        this.clickList = new ArrayList<>();
         this.board = new Board<Candy>(boardSize);
         generateCandyArray();
     }
 
     public void generateCandyArray(){
         this.board.fill(p -> Candy.generateNewCandy());
-    }
-    public void removeSameNeighbours(Position p) {
-        findAllMatches().stream()
-                .filter(match -> match.contains(p))
-                .forEach(match -> {
-                    clearMatch(match);
-                    fallDownTo(p);
-                    increaseScore(match.size());
-                } );
     }
 
     public void clearMatch(List<Position> match){
@@ -67,6 +59,7 @@ public class CandyCrushModel {
         List<Position> match = matches.iterator().next();
         clearMatch(match);
         updateBoard();
+        increaseScore(match.size());
         return true;
     }
 
@@ -85,12 +78,14 @@ public class CandyCrushModel {
 
     public Stream<Position> horizontalStartingPositions(){
         return this.board.getBoardSize().positions().stream()
-                .filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkLeft()));
+                //.filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkLeft())) //--WERKT ENKEL VOLLEDIG ZONDER DEZE LIJN. WAAROM???
+        ;
     }
 
     public Stream<Position> verticalStartingPositions(){
         return this.board.getBoardSize().positions().stream()
-                .filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkUp()));
+                //.filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkUp())) //--WERKT ENKEL VOLLEDIG ZONDER DEZE LIJN. WAAROM???
+        ;
     }
 
     public List<Position> longestMatchToRight(Position pos){
@@ -127,6 +122,34 @@ public class CandyCrushModel {
                 .collect(Collectors.toSet());
     }
 
+    public void handleClick(Position p){
+        clickList.add(p);
+        if(clickList.size() == 2){
+            swapCandies(clickList.get(0), clickList.get(1));
+            clickList.clear();
+        }
+    }
+    public void swapCandies(Position p1, Position p2){
+        if(!p1.isAdjacentTo(p2) || !matchAfterSwap(p1, p2)){
+            return;
+        }else{
+            Candy c1 = this.board.getCellAt(p1);
+            Candy c2 = this.board.getCellAt(p2);
+            this.board.replaceCellAt(p1, c2);
+            this.board.replaceCellAt(p2, c1);
+        }
+        updateBoard();
+    }
+    public boolean matchAfterSwap(Position p1, Position p2){
+        Candy c1 = this.board.getCellAt(p1);
+        Candy c2 = this.board.getCellAt(p2);
+        this.board.replaceCellAt(p1, c2);
+        this.board.replaceCellAt(p2, c1);
+        Set<List<Position>> matches = findAllMatches();
+        this.board.replaceCellAt(p1, c1);
+        this.board.replaceCellAt(p2, c2);
+        return !matches.isEmpty();
+    }
 
     public void increaseScore(int amount) {
         this.score += amount;
@@ -153,6 +176,10 @@ public class CandyCrushModel {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public void setCandyAt(Position p, Candy candy) {
+        this.board.replaceCellAt(p, candy);
     }
 
     public void reset() {

@@ -22,4 +22,5 @@ public record BoardSize(int height, int width) {
     public int size() {
         return height * width;
     }
+
 }

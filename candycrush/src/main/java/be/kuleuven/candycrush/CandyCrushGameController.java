@@ -29,7 +29,7 @@ public class CandyCrushGameController {
 
     @FXML
     public void initialize(String name) {
-        this.model = new CandyCrushModel(name);
+        this.model = new CandyCrushModel(name, new BoardSize(HEIGHT,WIDTH));
         this.view = new CandyCrushView(model, candyCrushPane, CANDY_PANE_WIDTH, CANDY_PANE_HEIGHT, currentScoreLabel);
         candyCrushPane.getChildren().addAll(view);
         currentPlayerLabel.setText(model.getName());
