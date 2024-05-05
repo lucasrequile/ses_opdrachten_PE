@@ -3,6 +3,8 @@ package be.kuleuven.candycrush.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CandyCrushModelTest{
@@ -37,6 +39,7 @@ class CandyCrushModelTest{
     @Test
     public void testRemoveSameNeighbours_under3() {
         model.generateCandyArray();
+        model.getBoard().fill((pos) -> new NormalCandy(1));
         Candy c1 = new NormalCandy(3);
         Candy c2 = new NormalCandy(2);
         Position p1 = new Position(0,0,boardSize);
@@ -47,12 +50,11 @@ class CandyCrushModelTest{
         Position p6 = new Position(1,2,boardSize);
         model.getBoard().replaceCellAt(p1,c1);
         model.getBoard().replaceCellAt(p2,c1);
-        model.getBoard().replaceCellAt(p3,c1);
+        model.getBoard().replaceCellAt(p3,c2);
         model.getBoard().replaceCellAt(p4,c2);
         model.getBoard().replaceCellAt(p5,c2);
         model.getBoard().replaceCellAt(p6,c2);
-        Position p = new Position(0,0,boardSize);
-        model.removeSameNeighbours(p);
+        model.removeSameNeighbours(p1);
         assertEquals(c1, model.getBoard().getCellAt(p1));
         assertEquals(c2, model.getBoard().getCellAt(p4));
         assertEquals(c2, model.getBoard().getCellAt(p5));
@@ -63,6 +65,7 @@ class CandyCrushModelTest{
     @Test
     public void testRemoveSameNeighbours_above3() {
         model.generateCandyArray();
+        model.getBoard().fill((pos) -> new NormalCandy(1));
         Candy c1 = new NormalCandy(3);
         Position p1 = new Position(0,0,boardSize);
         Position p2 = new Position(0,1,boardSize);
@@ -76,11 +79,8 @@ class CandyCrushModelTest{
         model.getBoard().replaceCellAt(p4,c1);
         model.getBoard().replaceCellAt(p5,c1);
         model.getBoard().replaceCellAt(p6,c1);
-        Position p = new Position(0,0,boardSize);
-        model.removeSameNeighbours(p);
-        assertEquals(c1, model.getBoard().getCellAt(p3));
-        assertEquals(c1, model.getBoard().getCellAt(p6));
-        assertEquals(4,model.getScore());
+        model.removeSameNeighbours(p1);
+        assertEquals(3,model.getScore());
     }
 
     @Test
@@ -138,5 +138,92 @@ class CandyCrushModelTest{
     public void testToIndex() {
         Position position = new Position(5, 5, boardSize);
         assertEquals(55, position.toIndex());
+    }
+    //test the new stream-based methods
+    @Test
+    public void testWalkLeft() {
+        Position position = new Position(5, 5, boardSize);
+        Stream<Position> left = position.walkLeft();
+        long count = left.count();
+        assertEquals(6, count);
+    }
+
+    @Test
+    public void testWalkRight() {
+        Position position = new Position(5, 5, boardSize);
+        Stream<Position> right = position.walkRight();
+        long count = right.count();
+        assertEquals(5, count);
+    }
+
+    @Test
+    public void testWalkUp() {
+        Position position = new Position(5, 5, boardSize);
+        Stream<Position> up = position.walkUp();
+        long count = up.count();
+        assertEquals(6, count);
+    }
+
+    @Test
+    public void testWalkDown() {
+        Position position = new Position(5, 5, boardSize);
+        Stream<Position> down = position.walkDown();
+        long count = down.count();
+        assertEquals(5, count);
+    }
+
+    @Test
+    public void testFirstTwoHaveCandy() {
+        Position position1 = new Position(5, 5, boardSize);
+        Position position2 = new Position(5, 6, boardSize);
+        Position position3 = new Position(5, 7, boardSize);
+        Position position4 = new Position(6, 5, boardSize);
+        model.getBoard().replaceCellAt(position1, new NormalCandy(3));
+        model.getBoard().replaceCellAt(position2, new NormalCandy(3));
+        model.getBoard().replaceCellAt(position3, new NormalCandy(3));
+        model.getBoard().replaceCellAt(position4, new NormalCandy(2));
+        assertTrue(model.firstTwoHaveCandy(new NormalCandy(3), position1.walkRight()));
+        assertFalse(model.firstTwoHaveCandy(new NormalCandy(3), position1.walkDown()));
+    }
+
+    @Test
+    public void testLongestMatchRight() {
+        model.getBoard().fill((pos) -> new NormalCandy(2));
+        model.getBoard().replaceCellAt(new Position(0,0, model.getBoard().getBoardSize()), new NormalCandy(1));
+        model.getBoard().replaceCellAt(new Position(0,1, model.getBoard().getBoardSize()), new NormalCandy(1));
+        model.getBoard().replaceCellAt(new Position(0,2, model.getBoard().getBoardSize()), new NormalCandy(1));
+        model.getBoard().replaceCellAt(new Position(0,3, model.getBoard().getBoardSize()), new NormalCandy(3));
+        assertEquals(3, model.longestMatchToRight(new Position(0,0, model.getBoard().getBoardSize())).size());
+        assertEquals(2, model.longestMatchToRight(new Position(0,1, model.getBoard().getBoardSize())).size());
+        assertEquals(1, model.longestMatchToRight(new Position(0,3, model.getBoard().getBoardSize())).size());
+    }
+
+    @Test
+    public void testLongestMatchDown(){
+        model.getBoard().fill((pos) -> new NormalCandy(2));
+        model.getBoard().replaceCellAt(new Position(0,0, model.getBoard().getBoardSize()), new NormalCandy(1));
+        model.getBoard().replaceCellAt(new Position(1,0, model.getBoard().getBoardSize()), new NormalCandy(1));
+        model.getBoard().replaceCellAt(new Position(2,0, model.getBoard().getBoardSize()), new NormalCandy(1));
+        model.getBoard().replaceCellAt(new Position(3,0, model.getBoard().getBoardSize()), new NormalCandy(3));
+        assertEquals(3, model.longestMatchDown(new Position(0,0, model.getBoard().getBoardSize())).size());
+        assertEquals(2, model.longestMatchDown(new Position(1,0, model.getBoard().getBoardSize())).size());
+        assertEquals(1, model.longestMatchDown(new Position(3,0, model.getBoard().getBoardSize())).size());
+    }
+
+    @Test
+    public void testFindAllMatches(){
+        model.getBoard().fill((pos) -> new NormalCandy(0));
+        int size = model.findAllMatches().size();
+        model.getBoard().replaceCellAt(new Position(0,0, model.getBoard().getBoardSize()), new NormalCandy(1));
+        model.getBoard().replaceCellAt(new Position(0,1, model.getBoard().getBoardSize()), new NormalCandy(1));
+        model.getBoard().replaceCellAt(new Position(0,2, model.getBoard().getBoardSize()), new NormalCandy(1));
+        model.getBoard().replaceCellAt(new Position(0,3, model.getBoard().getBoardSize()), new NormalCandy(3));
+        model.getBoard().replaceCellAt(new Position(0,4, model.getBoard().getBoardSize()), new NormalCandy(2));
+        model.getBoard().replaceCellAt(new Position(0,5, model.getBoard().getBoardSize()), new NormalCandy(2));
+        model.getBoard().replaceCellAt(new Position(0,6, model.getBoard().getBoardSize()), new NormalCandy(2));
+        model.getBoard().replaceCellAt(new Position(0,7, model.getBoard().getBoardSize()), new NormalCandy(2));
+        model.getBoard().replaceCellAt(new Position(0,8, model.getBoard().getBoardSize()), new NormalCandy(2));
+        model.getBoard().replaceCellAt(new Position(0,9, model.getBoard().getBoardSize()), new NormalCandy(2));
+        assertEquals(size+1, model.findAllMatches().size());
     }
 }

@@ -2,7 +2,7 @@ package be.kuleuven.candycrush.model;
 
 import javafx.scene.paint.Color;
 
-public sealed interface Candy permits NormalCandy, Licorice, JollyRancher, GummyBear, Dragibus {
+public sealed interface Candy permits Dragibus, GummyBear, JollyRancher, Licorice, NormalCandy {
     public static Candy generateNewCandy(){
         int r = (int) (Math.random() * 5);
         switch(r){

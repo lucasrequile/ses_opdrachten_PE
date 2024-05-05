@@ -71,6 +71,7 @@ public class Board<T> {
     }
 
     public void generateReversedBoardCells(){
+        this.reverseBoardCells.clear();
         for (Map.Entry<Position, T> entry : this.boardCells.entrySet()) {
             if(this.reverseBoardCells.containsKey(entry.getValue())){
                 this.reverseBoardCells.get(entry.getValue()).add(entry.getKey());

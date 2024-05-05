@@ -1,8 +1,8 @@
 package be.kuleuven.candycrush.model;
 import java.lang.Math;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CandyCrushModel {
     private final String playerName;
@@ -23,34 +23,65 @@ public class CandyCrushModel {
         this.board.fill(p -> Candy.generateNewCandy());
     }
     public void removeSameNeighbours(Position p) {
-        ArrayList<Position> sameNeighbourPositions = (ArrayList<Position>) getSameNeighbours(p);
-        if(sameNeighbourPositions == null){
-            return;
-        }else{
-            for (Position neighbourPosition : sameNeighbourPositions) {
-                this.board.replaceCellAt(neighbourPosition, Candy.generateNewCandy());
-            }
-            increaseScore(sameNeighbourPositions.size());
-        }
+        findAllMatches().stream()
+                .filter(match -> match.contains(p))
+                .forEach(match -> {
+                    match.forEach(pos -> this.board.replaceCellAt(pos, Candy.generateNewCandy()));
+                    increaseScore(match.size());
+                } );
     }
 
-    public Iterable<Position> getSameNeighbours(Position p){
-        List<Position> sameNeighbours = new ArrayList<Position>();
-        for(Position neighbourPosition : p.neighborPositions()){
-            if(neighbourPosition.rowNumber() < 0 || neighbourPosition.rowNumber() >= board.getBoardSize().height() || neighbourPosition.columnNumber() < 0 || neighbourPosition.columnNumber() >= board.getBoardSize().width()){
-                continue;
-            }
-            if(this.board.getCellAt(neighbourPosition).equals(board.getCellAt(p))){
-                sameNeighbours.add(neighbourPosition);
-            }
+    public boolean firstTwoHaveCandy(Candy candy, Stream<Position> positions){
+        List<Position> positionsList = positions.toList();
+        if(positionsList.size() < 2){
+            return false;
         }
-        sameNeighbours.add(p);
-        if(sameNeighbours.size() >= 3){
-            return sameNeighbours;
-        }else{
-            return null;
-        }
+        return positionsList.stream()
+                .limit(2)
+                .allMatch(p -> this.board.getCellAt(p)
+                        .equals(candy));
+
     }
+
+    public Stream<Position> horizontalStartingPositions(){
+        return this.board.getBoardSize().positions().stream()
+                .filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkLeft()));
+    }
+
+    public Stream<Position> verticalStartingPositions(){
+        return this.board.getBoardSize().positions().stream()
+                .filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkUp()));
+    }
+
+    public List<Position> longestMatchToRight(Position pos){
+        return pos.walkRight()
+                .takeWhile(p -> this.board.getCellAt(p).equals(this.board.getCellAt(pos)))
+                .toList();
+    }
+
+    public List<Position> longestMatchDown(Position pos){
+        return pos.walkDown()
+                .takeWhile(p -> this.board.getCellAt(p).equals(this.board.getCellAt(pos)))
+                .toList();
+    }
+
+    public Set<List<Position>> findAllMatches(){
+        List<List<Position>> allMatches = Stream.concat(horizontalStartingPositions(), verticalStartingPositions())
+                .flatMap(p -> {
+                    List<Position> horizontalMatch = longestMatchToRight(p);
+                    List<Position> verticalMatch = longestMatchDown(p);
+                    return Stream.of(horizontalMatch, verticalMatch);
+                })
+                .filter(l -> l.size() > 2)
+                .sorted((match1, match2) -> match2.size() - match1.size())
+                .toList();
+
+        return allMatches.stream()
+                .filter(match -> allMatches.stream()
+                        .noneMatch(longerMatch -> longerMatch.size() > match.size() && longerMatch.containsAll(match)))
+                .collect(Collectors.toSet());
+    }
+
 
     public void increaseScore(int amount) {
         this.score += amount;
