@@ -1,5 +1,4 @@
 package be.kuleuven.candycrush.model;
-import java.lang.Math;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,9 +25,49 @@ public class CandyCrushModel {
         findAllMatches().stream()
                 .filter(match -> match.contains(p))
                 .forEach(match -> {
-                    match.forEach(pos -> this.board.replaceCellAt(pos, Candy.generateNewCandy()));
+                    clearMatch(match);
+                    fallDownTo(p);
                     increaseScore(match.size());
                 } );
+    }
+
+    public void clearMatch(List<Position> match){
+        List<Position> matchInternal = new ArrayList<>(match);
+        if(matchInternal.isEmpty()){
+            return;
+        }
+        Position p = matchInternal.getFirst();
+        this.board.replaceCellAt(p, null);
+        fallDownTo(p);
+        matchInternal.removeFirst();
+        clearMatch(matchInternal);
+    }
+
+    public void fallDownTo(Position pos){
+        if(pos.rowNumber() == 0){
+            return;
+        }
+        Position above = new Position(pos.rowNumber() - 1, pos.columnNumber(), pos.boardSize());
+        if(this.board.getCellAt(above) == null){
+            fallDownTo(above);
+        }if(this.board.getCellAt(above) != null){
+            this.board.replaceCellAt(pos, this.board.getCellAt(above));
+            this.board.replaceCellAt(above, null);
+            fallDownTo(above);
+        }else{
+            fallDownTo(above);
+        }
+    }
+
+    public boolean updateBoard(){
+        Set<List<Position>> matches = findAllMatches();
+        if(matches.isEmpty()){
+            return false;
+        }
+        List<Position> match = matches.iterator().next();
+        clearMatch(match);
+        updateBoard();
+        return true;
     }
 
     public boolean firstTwoHaveCandy(Candy candy, Stream<Position> positions){
@@ -38,6 +77,7 @@ public class CandyCrushModel {
         }
         return positionsList.stream()
                 .limit(2)
+                .filter(p -> this.board.getCellAt(p) != null)
                 .allMatch(p -> this.board.getCellAt(p)
                         .equals(candy));
 
@@ -55,13 +95,18 @@ public class CandyCrushModel {
 
     public List<Position> longestMatchToRight(Position pos){
         return pos.walkRight()
-                .takeWhile(p -> this.board.getCellAt(p).equals(this.board.getCellAt(pos)))
+                .takeWhile(p ->
+                        this.board.getCellAt(pos) != null && this.board.getCellAt(p) != null &&
+                            this.board.getCellAt(p).equals(this.board.getCellAt(pos)))
                 .toList();
     }
 
     public List<Position> longestMatchDown(Position pos){
         return pos.walkDown()
-                .takeWhile(p -> this.board.getCellAt(p).equals(this.board.getCellAt(pos)))
+                .takeWhile(p ->
+                    this.board.getCellAt(pos) != null && this.board.getCellAt(p) != null &&
+                    this.board.getCellAt(p).equals(this.board.getCellAt(pos))
+                )
                 .toList();
     }
 
@@ -113,5 +158,6 @@ public class CandyCrushModel {
     public void reset() {
         generateCandyArray();
         setScore(0);
+        updateBoard();
     }
 }

@@ -41,10 +41,12 @@ public class CandyCrushView extends Region {
         for(Map.Entry<Position, Candy> entry : candyArray.entrySet()){
             Position p = entry.getKey();
             Candy c = entry.getValue();
-            Node n = makeCandyShape(p, c);
-            candyCrushPane.getChildren().add(n);
-            n.setOnMouseClicked(event -> handleClick(p));
-            i++;
+            if(c != null){
+                Node n = makeCandyShape(p, c);
+                candyCrushPane.getChildren().add(n);
+                n.setOnMouseClicked(event -> handleClick(p));
+                i++;
+            }
         }
 
     }
@@ -58,7 +60,8 @@ public class CandyCrushView extends Region {
             r.setLayoutX(layoutX);
             r.setLayoutY(layoutY);
             return r;
-        }else{
+        }
+        else{
             Circle c = new Circle(candyWidth/2);
             c.setFill(candy.getColor());
             int layoutX = position.columnNumber()*candyWidth;
