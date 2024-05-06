@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
+import java.util.ArrayList;
+
 public class CandyCrushGameController {
     @FXML
     private AnchorPane mainPane;
@@ -39,6 +41,7 @@ public class CandyCrushGameController {
     private void update(){
         view.update();
     }
+
 
     private void reset(){
         model.reset();

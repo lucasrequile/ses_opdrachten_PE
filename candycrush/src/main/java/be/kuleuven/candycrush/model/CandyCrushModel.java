@@ -65,26 +65,26 @@ public class CandyCrushModel {
 
     public boolean firstTwoHaveCandy(Candy candy, Stream<Position> positions){
         List<Position> positionsList = positions.toList();
+
         if(positionsList.size() < 2){
             return false;
         }
+
         return positionsList.stream()
                 .limit(2)
-                .filter(p -> this.board.getCellAt(p) != null)
-                .allMatch(p -> this.board.getCellAt(p)
-                        .equals(candy));
-
+                .allMatch(p -> this.board.getCellAt(p) != null
+                        && this.board.getCellAt(p).equals(candy));
     }
 
     public Stream<Position> horizontalStartingPositions(){
         return this.board.getBoardSize().positions().stream()
-                //.filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkLeft())) //--WERKT ENKEL VOLLEDIG ZONDER DEZE LIJN. WAAROM???
+                .filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkLeft())) //--WERKT ENKEL VOLLEDIG ZONDER DEZE LIJN. WAAROM???
         ;
     }
 
     public Stream<Position> verticalStartingPositions(){
         return this.board.getBoardSize().positions().stream()
-                //.filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkUp())) //--WERKT ENKEL VOLLEDIG ZONDER DEZE LIJN. WAAROM???
+                .filter(p -> !firstTwoHaveCandy(this.board.getCellAt(p), p.walkUp())) //--WERKT ENKEL VOLLEDIG ZONDER DEZE LIJN. WAAROM???
         ;
     }
 
@@ -124,6 +124,7 @@ public class CandyCrushModel {
 
     public void handleClick(Position p){
         clickList.add(p);
+        System.out.println(p.toIndex()+","+";"+this.board.getCellAt(p).isSpecial()+this.board.getCellAt(p).getColor());
         if(clickList.size() == 2){
             swapCandies(clickList.get(0), clickList.get(1));
             clickList.clear();

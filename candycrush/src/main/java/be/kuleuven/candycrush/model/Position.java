@@ -1,6 +1,7 @@
 package be.kuleuven.candycrush.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.stream.Stream;
 
 public record Position(int rowNumber, int columnNumber, BoardSize boardSize) {
@@ -45,28 +46,32 @@ public record Position(int rowNumber, int columnNumber, BoardSize boardSize) {
         return Stream.concat(Stream.of(this), this.boardSize.positions().stream()
                 .filter(p -> p.columnNumber < this.columnNumber
                         && p.rowNumber == this.rowNumber
-                ));
+                )
+                .sorted(Comparator.comparing(Position::columnNumber).reversed()));
     }
 
     public Stream<Position> walkRight(){
         return Stream.concat(Stream.of(this), this.boardSize.positions().stream()
                 .filter(p -> p.columnNumber > this.columnNumber
                         && p.rowNumber == this.rowNumber
-                ));
+                )
+                .sorted(Comparator.comparing(Position::columnNumber)));
     }
 
     public Stream<Position> walkUp(){
         return Stream.concat(Stream.of(this), this.boardSize.positions().stream()
                 .filter(p -> p.rowNumber < this.rowNumber
                         && p.columnNumber == this.columnNumber
-                ));
+                )
+                .sorted(Comparator.comparing(Position::rowNumber).reversed()));
     }
 
     public Stream<Position> walkDown(){
         return Stream.concat(Stream.of(this), this.boardSize.positions().stream()
                 .filter(p -> p.rowNumber > this.rowNumber
                         && p.columnNumber == this.columnNumber
-                ));
+                )
+                .sorted(Comparator.comparing(Position::rowNumber)));
     }
 
     public boolean isAdjacentTo(Position other){

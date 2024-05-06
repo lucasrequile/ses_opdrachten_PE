@@ -1,12 +1,16 @@
 package be.kuleuven.candycrush.view;
 
 import be.kuleuven.candycrush.model.*;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -52,6 +56,7 @@ public class CandyCrushView extends Region {
     }
 
     private Node makeCandyShape(Position position, Candy candy){
+        Group g = new Group();
         if(candy.isSpecial()){
             Rectangle r = new Rectangle(candyWidth, candyHeight);
             r.setFill(candy.getColor());
@@ -59,7 +64,11 @@ public class CandyCrushView extends Region {
             int layoutY = position.rowNumber()*candyHeight-candyHeight/2;
             r.setLayoutX(layoutX);
             r.setLayoutY(layoutY);
-            return r;
+            g.getChildren().add(r);
+            if(getSpecial(position) != null){
+                g.getChildren().add(getSpecial(position));
+            }
+            return g;
         }
         else{
             Circle c = new Circle(candyWidth/2);
@@ -68,9 +77,66 @@ public class CandyCrushView extends Region {
             int layoutY = position.rowNumber()*candyHeight;
             c.setLayoutX(layoutX);
             c.setLayoutY(layoutY);
-            return c;
+            g.getChildren().add(c);
+            if(getSpecial(position) != null){
+                g.getChildren().add(getSpecial(position));
+            }
+            return g;
         }
     }
+    private ArrayList<Position> horizontalStartingPositions = new ArrayList<>();
+    private ArrayList<Position> verticalStartingPositions = new ArrayList<>();
+
+    private void getHorizontalAndVerticalStartingPositions() {
+        horizontalStartingPositions.clear();
+        verticalStartingPositions.clear();
+        model.horizontalStartingPositions().forEach(horizontalStartingPositions::add);
+        model.verticalStartingPositions().forEach(verticalStartingPositions::add);
+    }
+
+    public Node getSpecial(Position position){
+        Node a = getHorizontal(position);
+        Node b = getVertical(position);
+        if(a != null && b!=null){
+            return new Group(b, a);
+        }
+        if(a != null){
+            return a;
+        }
+        if(b != null){
+            return b;
+        }
+        return null;
+    }
+    private Node getHorizontal(Position position){
+        for(Position p: horizontalStartingPositions){
+            if(p.equals(position)){
+                Rectangle r = new Rectangle(candyWidth/3, candyHeight/3);
+                r.setFill(Color.BEIGE);
+                int layoutX = position.columnNumber()*candyWidth-candyWidth/2;
+                int layoutY = position.rowNumber()*candyHeight-candyHeight/2;
+                r.setLayoutX(layoutX);
+                r.setLayoutY(layoutY);
+                return r;
+            }
+        }
+        return null;
+    }
+    private Node getVertical(Position position){
+        for(Position p: verticalStartingPositions){
+            if(p.equals(position)){
+                Rectangle r = new Rectangle(candyWidth/2, candyHeight/2);
+                r.setFill(Color.GRAY);
+                int layoutX = position.columnNumber()*candyWidth-candyWidth/2;
+                int layoutY = position.rowNumber()*candyHeight-candyHeight/2;
+                r.setLayoutX(layoutX);
+                r.setLayoutY(layoutY);
+                return r;
+            }
+        }
+        return null;
+    }
+
 
     private void handleClick(Position p) {
         System.out.println("Clicked on candy at index: " + p.toIndex());
@@ -79,6 +145,7 @@ public class CandyCrushView extends Region {
     }
 
     public void update(){
+        getHorizontalAndVerticalStartingPositions();
         drawCandies();
         currentScoreLabel.setText(""+ model.getScore());
     }
