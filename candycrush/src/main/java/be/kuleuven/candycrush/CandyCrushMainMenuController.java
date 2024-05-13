@@ -22,6 +22,7 @@ public class CandyCrushMainMenuController {
     @FXML
     private void initialize(){
         startbtn.setOnAction(e->loginButtonClicked());
+        //VOLGENDE LIJN UNCOMMENTEN VOOR VOOR MAXIMISESCORE!
         StringModelMaker stringModel = new StringModelMaker();
     }
 

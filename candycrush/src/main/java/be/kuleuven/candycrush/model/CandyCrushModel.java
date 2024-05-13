@@ -9,8 +9,8 @@ public class CandyCrushModel {
     private final String playerName;
     private int score;
     private int highScore;
-    private Board<Candy> board;
-    private ArrayList<Position> clickList;
+    private final Board<Candy> board;
+    private final ArrayList<Position> clickList;
 
     public CandyCrushModel(String playerName, BoardSize boardSize) {
         this.score = 0;
