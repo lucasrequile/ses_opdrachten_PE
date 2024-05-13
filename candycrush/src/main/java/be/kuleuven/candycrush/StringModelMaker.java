@@ -24,15 +24,16 @@ public class StringModelMaker {
    @#oo#@
    @*@**@
    *#@##*""");
-        /*System.out.println("Model 1:");
-        model1.maximizeScore();
+
+        System.out.println("Model 1:");
+        model1.maximizeScore(model1.getBoard());
         System.out.println("Model 1 klaar");
         System.out.println("Model 2:");
-        model2.maximizeScore();
+        model2.maximizeScore(model2.getBoard());
         System.out.println("Model 2 klaar");
         System.out.println("Model 3:");
-        model3.maximizeScore();
-        System.out.println("Model 3 klaar");*/
+        model3.maximizeScore(model3.getBoard());
+        System.out.println("Model 3 klaar");
 
     }
 
@@ -51,7 +52,7 @@ public class StringModelMaker {
 
     private static Candy characterToCandy(char c) {
         return switch(c) {
-            case 'o' -> null;
+            case 'o' -> new NormalCandy(0);
             case '*' -> new NormalCandy(1);
             case '#' -> new NormalCandy(2);
             case '@' -> new NormalCandy(3);

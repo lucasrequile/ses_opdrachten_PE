@@ -1,10 +1,12 @@
 package be.kuleuven.candycrush.model;
 
-public class Pair<T, U> {
-    private final T first;
-    private final U second;
+import java.util.Objects;
 
-    public Pair(T first, U second) {
+public class Pair<T> {
+    private final T first;
+    private final T second;
+
+    public Pair(T first, T second) {
         this.first = first;
         this.second = second;
     }
@@ -13,7 +15,20 @@ public class Pair<T, U> {
         return first;
     }
 
-    public U getSecond() {
+    public T getSecond() {
         return second;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pair<?> pair = (Pair<?>) o;
+        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
     }
 }

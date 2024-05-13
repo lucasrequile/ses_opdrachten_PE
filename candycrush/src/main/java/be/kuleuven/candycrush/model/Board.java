@@ -1,9 +1,6 @@
 package be.kuleuven.candycrush.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class Board<T> {
@@ -81,5 +78,9 @@ public class Board<T> {
                 this.reverseBoardCells.put(entry.getValue(), positions);
             }
         }
+    }
+
+    public boolean isEmpty() {
+        return this.boardCells.values().stream().allMatch(Objects::isNull);
     }
 }

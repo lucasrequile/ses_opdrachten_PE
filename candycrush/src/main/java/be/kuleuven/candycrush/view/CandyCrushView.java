@@ -25,6 +25,7 @@ public class CandyCrushView extends Region {
     private int candyWidth;
     private int candyHeight;
     private Map<Position, Candy> candyArray;
+    private boolean debugMode = false;
 
     public CandyCrushView(CandyCrushModel model, AnchorPane candyCrushPane, int candyPaneWidth, int candyPaneHeight, Label currentScoreLabel) {
         this.model = model;
@@ -65,7 +66,7 @@ public class CandyCrushView extends Region {
             r.setLayoutX(layoutX);
             r.setLayoutY(layoutY);
             g.getChildren().add(r);
-            if(getSpecial(position) != null){
+            if(getSpecial(position) != null && debugMode){
                 g.getChildren().add(getSpecial(position));
             }
             return g;
@@ -78,7 +79,7 @@ public class CandyCrushView extends Region {
             c.setLayoutX(layoutX);
             c.setLayoutY(layoutY);
             g.getChildren().add(c);
-            if(getSpecial(position) != null){
+            if(getSpecial(position) != null && debugMode){
                 g.getChildren().add(getSpecial(position));
             }
             return g;
@@ -90,8 +91,8 @@ public class CandyCrushView extends Region {
     private void getHorizontalAndVerticalStartingPositions() {
         horizontalStartingPositions.clear();
         verticalStartingPositions.clear();
-        model.horizontalStartingPositions().forEach(horizontalStartingPositions::add);
-        model.verticalStartingPositions().forEach(verticalStartingPositions::add);
+        model.horizontalStartingPositions(model.getBoard()).forEach(horizontalStartingPositions::add);
+        model.verticalStartingPositions(model.getBoard()).forEach(verticalStartingPositions::add);
     }
 
     public Node getSpecial(Position position){
@@ -144,8 +145,14 @@ public class CandyCrushView extends Region {
         update();
     }
 
+    public void toggleDebugMode(){
+        debugMode = !debugMode;
+    }
+
     public void update(){
-        getHorizontalAndVerticalStartingPositions();
+        if(debugMode){
+            getHorizontalAndVerticalStartingPositions();
+        }
         drawCandies();
         currentScoreLabel.setText(""+ model.getScore());
     }

@@ -19,6 +19,8 @@ public class CandyCrushGameController {
     private Label currentPlayerLabel;
     @FXML
     private Label currentScoreLabel;
+    @FXML
+    private ToggleButton debugModeButton;
 
     private CandyCrushModel model;
     private CandyCrushView view;
@@ -36,10 +38,15 @@ public class CandyCrushGameController {
         candyCrushPane.getChildren().addAll(view);
         currentPlayerLabel.setText(model.getName());
         resetbtn.setOnAction(e->reset());
+        debugModeButton.setOnAction(e->toggleDebugMode());
         reset();
     }
     private void update(){
         view.update();
+    }
+    private void toggleDebugMode(){
+        view.toggleDebugMode();
+        update();
     }
 
 

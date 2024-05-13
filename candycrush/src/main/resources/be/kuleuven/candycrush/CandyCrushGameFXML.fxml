@@ -11,5 +11,6 @@
       <Label fx:id="currentPlayerLabel" layoutX="411.0" layoutY="120.0" text="currentPlayer" />
       <Label layoutX="411.0" layoutY="160.0" text="Score:" />
       <Label fx:id="currentScoreLabel" layoutX="411.0" layoutY="180.0" text="score" />
+      <ToggleButton fx:id="debugModeButton" layoutX="428.0" layoutY="287.0" mnemonicParsing="false" text="Debug Mode" />
    </children>
 </AnchorPane>
