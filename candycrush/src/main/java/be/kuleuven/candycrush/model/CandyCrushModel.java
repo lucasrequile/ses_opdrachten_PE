@@ -25,16 +25,17 @@ public class CandyCrushModel {
         this.board.fill(p -> Candy.generateNewCandy());
     }
 
-    public void clearMatch(List<Position> match, Board<Candy> board){
+    public int clearMatch(List<Position> match, Board<Candy> board){
         List<Position> matchInternal = new ArrayList<>(match);
         if(matchInternal.isEmpty()){
-            return;
+            return 0;
         }
         Position p = matchInternal.getFirst();
         board.replaceCellAt(p, null);
         fallDownTo(p, board);
         matchInternal.removeFirst();
-        clearMatch(matchInternal, board);
+        int clearedCandies = 1 + clearMatch(match.subList(1, match.size()), board);
+        return clearedCandies;
     }
 
     public void fallDownTo(Position pos, Board<Candy> board){
@@ -53,16 +54,15 @@ public class CandyCrushModel {
         }
     }
 
-    public boolean updateBoard(Board<Candy> board){
-        Set<List<Position>> matches = findAllMatches(board);
+    public boolean updateBoard(Board<Candy> board, Set<List<Position>> matches){
         if(matches.isEmpty()){
             return false;
         }
         List<Position> match = matches.iterator().next();
         clearMatch(match, board);
-        updateBoard(board);
         increaseScore(match.size());
-        return true;
+        matches = findAllMatches(board);
+        return updateBoard(board, matches);
     }
 
     public boolean firstTwoHaveCandy(Board<Candy> board, Candy candy, Stream<Position> positions){
@@ -80,14 +80,12 @@ public class CandyCrushModel {
 
     public Stream<Position> horizontalStartingPositions(Board<Candy> board){
         return board.getBoardSize().positions().stream()
-                .filter(p -> !firstTwoHaveCandy(board, board.getCellAt(p), p.walkLeft())) //--WERKT ENKEL VOLLEDIG ZONDER DEZE LIJN. WAAROM???
-        ;
+                .filter(p -> !firstTwoHaveCandy(board, board.getCellAt(p), p.walkLeft()));
     }
 
     public Stream<Position> verticalStartingPositions(Board<Candy> board){
         return board.getBoardSize().positions().stream()
-                .filter(p -> !firstTwoHaveCandy(board, board.getCellAt(p), p.walkUp())) //--WERKT ENKEL VOLLEDIG ZONDER DEZE LIJN. WAAROM???
-        ;
+                .filter(p -> !firstTwoHaveCandy(board, board.getCellAt(p), p.walkUp()));
     }
 
     public List<Position> longestMatchToRight(Board<Candy> board, Position pos){
@@ -107,21 +105,51 @@ public class CandyCrushModel {
                 .toList();
     }
 
-    public Set<List<Position>> findAllMatches(Board<Candy> board){
-        List<List<Position>> allMatches = Stream.concat(horizontalStartingPositions(board), verticalStartingPositions(board))
-                .flatMap(p -> {
-                    List<Position> horizontalMatch = longestMatchToRight(board, p);
-                    List<Position> verticalMatch = longestMatchDown(board, p);
-                    return Stream.of(horizontalMatch, verticalMatch);
-                })
-                .filter(l -> l.size() > 2)
-                .sorted((match1, match2) -> match2.size() - match1.size())
-                .toList();
 
-        return allMatches.stream()
-                .filter(match -> allMatches.stream()
-                        .noneMatch(longerMatch -> longerMatch.size() > match.size() && longerMatch.containsAll(match)))
+    public Set<List<Position>> findAllMatches(Board<Candy> board) {
+        Set<List<Position>> horizontalMatches = horizontalStartingPositions(board)
+                .flatMap(p -> {
+                    List<Position> horMatch = longestMatchToRight(board, p);
+                    return Stream.of(horMatch);
+                })
+                .filter(match -> match.size() >2)
                 .collect(Collectors.toSet());
+
+        Set<List<Position>> verticalMatches = verticalStartingPositions(board)
+                .flatMap(p -> {
+                    List<Position> verMatch = longestMatchDown(board, p);
+                    return Stream.of(verMatch);
+                })
+                .filter(match -> match.size() >2)
+                .collect(Collectors.toSet());
+
+        Set<List<Position>> combinedMatches = new HashSet<>();
+        Iterator<List<Position>> horizontalIterator = horizontalMatches.iterator();
+        while (horizontalIterator.hasNext()) {
+            List<Position> horizontalMatch = horizontalIterator.next();
+            Iterator<List<Position>> verticalIterator = verticalMatches.iterator();
+            while (verticalIterator.hasNext()) {
+                List<Position> verticalMatch = verticalIterator.next();
+                List<Position> combinedMatch = new ArrayList<>(horizontalMatch);
+                combinedMatch.retainAll(verticalMatch);
+                if (!combinedMatch.isEmpty()) {
+                    List<Position> fullCombinedMatch = new ArrayList<>(horizontalMatch);
+                    fullCombinedMatch.addAll(verticalMatch);
+                    fullCombinedMatch = new ArrayList<>(new HashSet<>(fullCombinedMatch));
+                    combinedMatches.add(fullCombinedMatch);
+
+                    horizontalIterator.remove();
+                    verticalIterator.remove();
+                    break;
+                }
+            }
+        }
+        Set<List<Position>> allMatches = new HashSet<>();
+        allMatches.addAll(horizontalMatches);
+        allMatches.addAll(verticalMatches);
+        allMatches.addAll(combinedMatches);
+
+        return allMatches;
     }
 
     public void handleClick(Position p){
@@ -140,7 +168,7 @@ public class CandyCrushModel {
             board.replaceCellAt(p1, c2);
             board.replaceCellAt(p2, c1);
         }
-        updateBoard(board);
+        updateBoard(board, findAllMatches(board));
     }
     public boolean matchAfterSwap(Position p1, Position p2, Board<Candy> board){
         Candy c1 = board.getCellAt(p1);
@@ -167,11 +195,7 @@ public class CandyCrushModel {
         return new ArrayList<>(allPossibleSwaps);
     }
 
-    public void maximizeScore(Board<Candy> board) {
-        System.out.println("Number of possible swaps: " + getAllPossibleSwaps(board).size());
-        for(Pair<Position> swap : getAllPossibleSwaps(board)){
-            System.out.println("Swap: " + swap.getFirst() + " and " + swap.getSecond());
-        }
+    public Solution maximizeScore(Board<Candy> board) {
         Solution initialSolution = new Solution(0, new ArrayList<>(), board);
         Solution bestSoFar = find_best_score(initialSolution, null);
 
@@ -180,6 +204,7 @@ public class CandyCrushModel {
         for(Pair<Position> swap : bestSoFar.currentMoves()){
             System.out.println("Swap: " + swap.getFirst() + " and " + swap.getSecond());
         }
+        return bestSoFar;
     }
 
     public boolean solutionIsComplete(Solution solution){
@@ -199,7 +224,7 @@ public class CandyCrushModel {
                 Board<Candy> newBoard = new Board<>(current.getBoard().getBoardSize());
                 current.getBoard().copyTo(newBoard);
                 swapCandies(swap.getFirst(), swap.getSecond(), newBoard);
-                updateBoard(newBoard);
+                updateBoard(newBoard, findAllMatches(newBoard));
                 int score = (int) newBoard.getBoardCells().values().stream()
                         .filter(Objects::isNull).count();
 
@@ -246,7 +271,7 @@ public class CandyCrushModel {
 
     public void reset() {
         generateCandyArray();
-        updateBoard(board);
+        updateBoard(board, findAllMatches(board));
         setScore(0);
     }
 }
